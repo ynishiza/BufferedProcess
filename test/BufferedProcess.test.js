@@ -378,5 +378,17 @@ function baseFunctionalityTests({ createBufferedProcess, generateData }) {
       expect(error.message).to.eql('Oops');
     });
   });
+
+  it('can pipe from a stream', async function() {
+    const process = sinon.spy();
+    const bufferedProc = createBufferedProcess({
+      maxSize: 10,
+      process,
+    });
+    const data = generateData(100);
+    const stream = each => data.forEach(each);
+    await bufferedProc.pipe(stream);
+    expect(process).to.have.callCount(10);
+  });
 }
 

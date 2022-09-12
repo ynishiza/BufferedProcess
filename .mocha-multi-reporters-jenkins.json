@@ -1,0 +1,8 @@
+{
+  "reporterEnabled": "mochawesome,mocha-jenkins-reporter",
+  "mochawesomeReporterOptions": {
+    "consoleReporter": "none",
+    "charts": true,
+    "inline": true
+  }
+}

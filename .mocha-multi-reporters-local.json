@@ -1,0 +1,6 @@
+{
+  "reporterEnabled": "mochawesome",
+  "mochawesomeReporterOptions": {
+    "charts": true
+  }
+}

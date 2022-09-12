@@ -1,0 +1,22 @@
+name: Continuous Integration
+
+on: [push]
+
+jobs:
+  AutomatedTest:
+    runs-on: ubuntu-latest
+    steps:
+      - run: set
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: |
+          ls ${{ github.workspace }}
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Unit tests
+        run: npm run test:unit

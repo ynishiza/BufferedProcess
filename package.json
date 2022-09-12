@@ -14,7 +14,7 @@
     "timeout": 10000,
     "reporter": "mocha-multi-reporters"
   },
-  "author": "",
+  "author": "Yui Nishizawa",
   "license": "ISC",
   "devDependencies": {
     "chai": "^4.3.6",

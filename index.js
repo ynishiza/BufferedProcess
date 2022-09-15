@@ -9,6 +9,30 @@ module.exports = {
   pipeBuffer,
 };
 
+/**
+ * @callback StreamFunction
+ * @param {Function} each
+ */
+
+/**
+ * @typedef BufferedProcess
+ */
+
+/*
+ * ## Design note: sequential processing
+ * Buffer should be flushed and processed sequentially.
+ * This implies:
+ * - queue: buffer processes should be enqueued and run one at a time.
+ * - error handling: if an error occurs at any point, subsequent processes are
+ *   dropped, as the sequence is broken at that point.
+ */
+
+/**
+ * @function BufferedProcess.create
+ * @param {Object} options
+ * @param {Number} options.maxSize
+ * @param {Function} options.process
+ */
 function create(args) {
   return createBase({
     createBuffer() {
@@ -68,14 +92,6 @@ function createWithMap({ getKey, ...args }) {
   });
 }
 
-/*
- * Design note: sequential processing
- * Buffer should be flushed and processed sequentially.
- * This implies:
- * - queue: buffer processes should be enqueued and run one at a time.
- * - error handling: if an error occurs at any point, subsequent processes are
- *   dropped, as the sequence is broken at that point.
- */
 function createBase({ maxSize = 10000, createBuffer, process, ...rest }) {
   const my = {
     id: _.uniqueId(),
@@ -91,19 +107,66 @@ function createBase({ maxSize = 10000, createBuffer, process, ...rest }) {
     error: null,
   };
 
+  /** @lends BufferedProcess.prototype */
   const that = {
+    /**
+     * @type {Boolean}
+     */
     get isProcessing() { return !!my.currentProcess; },
+    /**
+     * @type {Boolean}
+     */
     get currentProcess() { return my.currentProcess; },
     get buffer() { return my.buffer; },
+    /**
+     * @type {Number}
+     */
     get maxSize() { return my.maxSize; },
+    /**
+     * @type {Number}
+     */
     get flushCount() { return my.flushCount; },
+    /**
+     * @type {Number}
+     */
     get total() { return my.total; },
+    /**
+     * @type {Error?}
+     */
     get error() { return my.error; },
+
+    /**
+     * @method
+     * @return {Boolean}
+     */
     isFull,
+
+    /**
+     * @method
+     * @return {Boolean}
+     */
     hasError,
+
+    /**
+     * @method
+     * @param {*} item
+     */
     push,
+
+    /**
+     * @method
+     */
     flush,
+
+    /**
+     * @method
+     */
     waitForProcesses,
+
+    /**
+     * @method
+     * @param {StreamFunction} stream
+     */
     pipe: pipe => pipeBuffer(that, pipe),
   };
 
